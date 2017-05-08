@@ -1,27 +1,33 @@
 <?php
 namespace App\Http\Controllers;
-use App\User1;
+use App\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function getDashboard(){
+        return view('dashboard');
+    }
     public function postSignUp(Request $request)
     {
         $email = $request ['email'];
         $first_name = $request ['first_name'];
         $password = bcrypt($request ['password']);
 
-        $user1=new User1();
-        $user1->email=$email;
-        $user1->first_name=$first_name;
-        $user1->password=$password;
+        $user=new User();
+        $user->email=$email;
+        $user->first_name=$first_name;
+        $user->password=$password;
 
-        $user1->save();
+        $user->save();
 
-        return redirect()->back();
+        return redirect()->route('dashboard');
     }
     public function postSignIn(Request $request)
     {
-
+        if(Auth::attempt(['email'=>$request['email'], 'password'=>$request['password']])){
+            return redirect()->route('dashboard');
+        }
+        return redirect()->back();
     }
 }
